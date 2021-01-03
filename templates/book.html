@@ -1,0 +1,460 @@
+{% extends "layout.html" %}
+{% set user = getUser(user_id) %}
+{% block title %}Books (@{{user.username}}){% endblock %}
+
+{% block content %}
+<section class="main-content columns has-background-light mb-0" style="height:100%">
+    
+    
+    {% if user is not none %}
+    <aside class="column is-one-fifth fixed-sidebar section has-background-dark m-0 p-0">
+
+        <div class="has-background-white ">
+            <a href="."><img class="m-0 py-0" src="{{url_for('static', filename='logo.svg')}}" alt="Media Logbook Logo"></a>
+        </div>
+        
+        <div class="columns has-background-info has-text-weight-bold has-text-white is-centered m-0 px-6 py-5">
+            <p class="">Books of {{user.username}}</p>
+        </div>
+
+        <div class="px-0 py-5">
+            <p class="menu-label is-hidden-touch px-6">Menu bar</p>
+            <ul class="">             
+                <li class="menu-item">
+                    <a class="button is-dark level-left is-active px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                        <span class="icon"><i class="fas fa-book"></i></span>
+                        <span>Books</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                        <span class="icon"><i class="fas fa-film"></i></span>
+                        <span>Movies</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                        <span class="icon"><i class="fas fa-compact-disc"></i></span>
+                        <span>Series</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                        <span>Other</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class=" mx-5 mt-6">
+                <li class="menu-item my-2">
+                    {% if currentuser_id is not none %}
+                    <a class="button m-0 py-5 is-rounded is-danger is-fullwidth" href="{{url_for('logout')}}">Log out</a>
+                    {% else %}
+                    <a class="button m-0 py-5 is-rounded is-success is-fullwidth" href="{{url_for('home')}}">Log in</a>
+                    {% endif %}
+                </li>
+            </ul> 
+        </div>
+
+    </aside>
+
+    <div class="container content-container column">
+        
+        <div class="section">
+            <div class="columns is-multiline m-2">
+                {% set boxColors = ["primary","danger","info","success"] %}
+                {% set boxSizes = [5, 6, 6, 5] %}
+                {% set ns = namespace(boxCount = 0) %}
+                {% for usercontent in usercontents if usercontent.user_id == user_id %}
+                {% set content = getContent(usercontent.content_id) %}
+                {% if content.content_type == "book" %}
+                {% set book = getBook(content.type_specific_id) %}
+                {% set boxSelector = ns.boxCount%4 %}
+                <div class="has-background-{{boxColors[boxSelector]}} is-{{boxSizes[boxSelector]}} m-3 px-4 column card">
+                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-book"></i> {{content.title}}</p>
+                    <p class="author subtitle is-italic has-text-weight-light">
+                        {% if book.author is not none %}by {{book.author}} {% endif %}
+                        {% if book.release_year is not none %}({{book.release_year}}){% endif %}
+                    </p>
+                    <p class="language"><span class="has-text-weight-bold">Language: </span>{{book.language}}</p>
+                    <p class="no_pages"><span class="has-text-weight-bold">Number of pages: </span>{{book.no_pages}}</p>
+                    <p class="isbn"><span class="has-text-weight-bold">ISBN: </span>{{book.isbn}}</p>
+                    <p class="genres"><span class="has-text-weight-bold">Genres: </span>-</p>
+
+                    {% if usercontent.owned is not none %}
+                    <p class="owned-status has-text-right"><i class="fas fa-boxes"></i>
+                        {% if usercontent.owned %} Owned {% else %} Not Owned {% endif %}
+                    </p>
+                    {% else %}<br>{% endif %}
+
+                    {% if usercontent.completion_status is not none %}
+                    <p class="completion-status has-text-right"><i class="fas fa-check"></i>
+                    {% if usercontent.completion_status %} Completed {% else %} Incompleted {% endif %}
+                    </p>
+                    {% else %}<br>{% endif %}
+
+                    {% if usercontent.user_rating is not none %}
+                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{usercontent.user_rating}}/10</p>
+                    {% else %}<br>{% endif %}
+
+                    {% if currentuser_id == user_id %}
+                    <form action="/delete" method="POST" id="delete"></form>
+                    <div class="buttons is-right mt-4">
+                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined edit-content" id="edit-content-{{usercontent.content_id}}">
+                            <i class="far fa-edit mr-2 edit-content" id="edit-content-{{usercontent.content_id}}"></i>
+                            <p class="edit-content" id="edit-content-{{usercontent.content_id}}">Edit</p>
+                        </button>
+                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined" type="submit" name="delete" form="delete" value={{usercontent.content_id}}>
+                            <i class="far fa-trash-alt mr-2"></i>
+                            <p>Delete</p>
+                        </button>
+                    </div>
+
+                    <div class="modal edit-modal" id="edit-modal-{{usercontent.content_id}}">
+                        <div class="modal-background close-edit-modal" id="close-edit-modal-{{usercontent.content_id}}"></div>
+                        <div class="modal-card">
+                            <header class="modal-card-head">
+                                <p class="modal-card-title">Edit book</p>
+                                <button class="delete close-edit-modal" id="close-edit-modal-{{usercontent.content_id}}" aria-label="close"></button>
+                            </header>
+                            <section class="modal-card-body">
+                                <form class="mt-3 mb-5 mx-6 px-6 container" action="{{url_for('edit', content_id=usercontent.content_id)}}" method="POST" id="edit-form-{{usercontent.content_id}}">
+                                    <div class="field">
+                                        <label for="book_title" class="label has-text-weight-normal has-text-left mb-1">Title:</label>
+                                        <div class="control has-icons-left has-icons-right">
+                                            <input class="input is-dark" id="book_title" type="text" value="{{content.title}}" name="book_title" autocomplete="off">
+                                            <span class="icon is-small is-left">
+                                                <i class="fas fa-book"></i>
+                                            </span>
+                                            <span class="icon is-small is-right">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field">
+                                        <label for="author" class="label has-text-weight-normal has-text-left mb-1">Author:</label>
+                                        <div class="control has-icons-left has-icons-right">
+                                            <input class="input is-dark" id="author" type="text" value="{{book.author}}" name="author" autocomplete="off">
+                                            <span class="icon is-small is-left">
+                                                <i class="fas fa-pen-alt"></i>
+                                            </span>
+                                            <span class="icon is-small is-right">
+                                            </span>
+                                        </div>
+                                    </div>
+                
+                                    <div class="field is-horizontal">
+                                        <div class="field-body">
+                                            <div class="field">
+                                                <label for="release_year" class="label has-text-weight-normal has-text-left mb-1">Release year:</label>
+                                                <div class="control has-icons-left has-icons-right">
+                                                    <input class="input is-dark pr-3" id="release_year" type="number" value="{{book.release_year}}" name="release_year" autocomplete="off">
+                                                    <span class="icon is-small is-left">
+                                                        <i class="fas fa-calendar-alt"></i>
+                                                    </span>
+                                                    <span class="icon is-small is-right">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <label for="language" class="label has-text-weight-normal has-text-left mb-1">Language:</label>
+                                                <div class="control has-icons-left has-icons-right">
+                                                    <input class="input is-dark" id="language" type="text" value="{{book.language}}" name="language" autocomplete="off">
+                                                    <span class="icon is-small is-left">
+                                                        <i class="fas fa-globe"></i>
+                                                    </span>
+                                                    <span class="icon is-small is-right">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field is-horizontal">
+                                        <div class="field-body">
+                                            <div class="field">
+                                                <label for="no_pages" class="label has-text-weight-normal has-text-left mb-1">Number of pages:</label>
+                                                <div class="control has-icons-left has-icons-right">
+                                                    <input class="input is-dark pr-3" id="no_pages" type="number" value="{{book.no_pages}}" name="no_pages" min=0 autocomplete="off">
+                                                    <span class="icon is-small is-left">
+                                                        <i class="fas fa-file"></i>
+                                                    </span>
+                                                    <span class="icon is-small is-right">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="field">
+                                                <label for="isbn" class="label has-text-weight-normal has-text-left mb-1">ISBN:</label>
+                                                <div class="control has-icons-left has-icons-right">
+                                                    <input class="input is-dark" id="isbn" type="text" value="{{book.isbn}}" name="isbn" autocomplete="off">
+                                                    <span class="icon is-small is-left">
+                                                        <i class="fas fa-barcode"></i>
+                                                    </span>
+                                                    <span class="icon is-small is-right">
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="field is-horizontal mt-5 is-flex is-flex-wrap-nowrap is-justify-content-space-around">
+                                        <div class="field control">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="completed"
+                                                {% if usercontent.completion_status is true %} checked {% endif %}>
+                                                Completed?
+                                            </label>
+                                        </div>
+                                        <div class="field control">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="owned"
+                                                {% if usercontent.owned is true %} checked {% endif %}>
+                                                Owned?
+                                            </label>
+                                        </div>
+                                    </div>
+                
+                                    <label for="user_rating" class="label has-text-weight-normal has-text-left mb-1">Rating:</label>
+                                    <div class="control is-flex is-flex-wrap-nowrap is-justify-content-space-around user_rating">
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=1 style="display: none">                       
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=2 style="display: none">                          
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=3 style="display: none">                          
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=4 style="display: none">                          
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=5 style="display: none">                          
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=6 style="display: none">                           
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=7 style="display: none">                           
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=8 style="display: none">                     
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=9 style="display: none">
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                        <label class="radio">
+                                            <input type="radio" name="user_rating" value=10 style="display: none">
+                                            <i class="far fa-star"></i>
+                                        </label>
+                                      </div>
+                
+                                </form>
+                            </section>
+                            <footer class="modal-card-foot buttons is-right">
+                                <button class="button is-info" type="submit", form="edit-form-{{usercontent.content_id}}" value="submit">Edit</button>
+                                <button class="button close-edit-modal" id="close-edit-modal-{{usercontent.content_id}}">Cancel</button>
+                            </footer>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+                {% set ns.boxCount = ns.boxCount + 1 %}
+                {% endif %}
+                {% endfor %}
+                
+                <span id="bottom"></span>
+            </div>
+        </div>
+
+        {% if currentuser_id == user_id %}
+        <button class="button is-large is-info is-rounded floating-button add-button add-content">
+            <span class="icon">
+                <i class="fas fa-plus"></i>
+            </span>
+        </button>
+        {% endif %}
+
+        <button class="button is-large is-info is-rounded floating-button top-button">
+            <span class="icon">
+                <i class="fas fa-arrow-up"></i>
+            </span>
+        </button>
+    </div>
+
+    
+    {% if currentuser_id == user_id %}
+    <div class="modal add-modal">
+        <div class="modal-background close-add-modal"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Add book</p>
+                <button class="delete close-add-modal" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <form class="mt-3 mb-5 mx-6 px-6 container" method="POST" id="add_form">
+                    <div class="field">
+                        <label for="book_title" class="label has-text-weight-normal has-text-left mb-1">Title:</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input is-dark" id="book_title" type="text" placeholder="Hitchhiker's Guide To The Galaxy" name="book_title" autocomplete="off">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-book"></i>
+                            </span>
+                            <span class="icon is-small is-right">
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="field">
+                        <label for="author" class="label has-text-weight-normal has-text-left mb-1">Author:</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input is-dark" id="author" type="text" placeholder="Douglas Adams" name="author" autocomplete="off">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-pen-alt"></i>
+                            </span>
+                            <span class="icon is-small is-right">
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="field is-horizontal">
+                        <div class="field-body">
+                            <div class="field">
+                                <label for="release_year" class="label has-text-weight-normal has-text-left mb-1">Release year:</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input class="input is-dark pr-3" id="release_year" type="number" value=2020 name="release_year" autocomplete="off">
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <span class="icon is-small is-right">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="language" class="label has-text-weight-normal has-text-left mb-1">Language:</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input class="input is-dark" id="language" type="text" placeholder="English" name="language" autocomplete="off">
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-globe"></i>
+                                    </span>
+                                    <span class="icon is-small is-right">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="field is-horizontal">
+                        <div class="field-body">
+                            <div class="field">
+                                <label for="no_pages" class="label has-text-weight-normal has-text-left mb-1">Number of pages:</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input class="input is-dark pr-3" id="no_pages" type="number" placeholder="" name="no_pages" min=0 autocomplete="off">
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-file"></i>
+                                    </span>
+                                    <span class="icon is-small is-right">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label for="isbn" class="label has-text-weight-normal has-text-left mb-1">ISBN:</label>
+                                <div class="control has-icons-left has-icons-right">
+                                    <input class="input is-dark" id="isbn" type="text" placeholder="" name="isbn" autocomplete="off">
+                                    <span class="icon is-small is-left">
+                                        <i class="fas fa-barcode"></i>
+                                    </span>
+                                    <span class="icon is-small is-right">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="field is-horizontal mt-5 is-flex is-flex-wrap-nowrap is-justify-content-space-around">
+                        <div class="field control">
+                            <label class="checkbox">
+                                <input type="checkbox" name="completed">
+                                Completed?
+                            </label>
+                        </div>
+                        <div class="field control">
+                            <label class="checkbox">
+                                <input type="checkbox" name="owned">
+                                Owned?
+                            </label>
+                        </div>
+                    </div>
+
+                    <label for="user_rating" class="label has-text-weight-normal has-text-left mb-1">Rating:</label>
+                    <div class="control is-flex is-flex-wrap-nowrap is-justify-content-space-around user_rating">
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=1 style="display: none">                       
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=2 style="display: none">                          
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=3 style="display: none">                          
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=4 style="display: none">                          
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=5 style="display: none">                          
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=6 style="display: none">                           
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=7 style="display: none">                           
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=8 style="display: none">                     
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=9 style="display: none">
+                            <i class="far fa-star"></i>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="user_rating" value=10 style="display: none">
+                            <i class="far fa-star"></i>
+                        </label>
+                      </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot buttons is-right">
+                <button class="button is-info" type="submit", form="add_form" value="submit">Add</button>
+                <button class="button close-add-modal">Cancel</button>
+            </footer>
+        </div>
+    </div>
+    {% endif %}
+
+
+    {% endif %}
+    
+</section>
+{% endblock %}
+
+{% block end %}
+    <script src="{{url_for('static', filename='content.js')}}"></script>
+{% endblock %}

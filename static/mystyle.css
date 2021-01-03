@@ -1,0 +1,42 @@
+#signup-link:hover {
+    text-decoration: underline;
+}
+
+.fixed-sidebar {
+    position: sticky;   
+    vertical-align: top;
+    
+    max-height: 100vh;
+    overflow-y: auto;
+    top: 0;
+    bottom: 0;
+}
+
+.content-container {
+    min-height: 115vh;
+}
+
+p.title{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.floating-button{
+	position:fixed;
+	width:60px;
+	height:60px;
+	
+	
+	text-align:center;
+	box-shadow: 2px 2px 3px #dddddd;
+}
+
+.add-button {
+    bottom:40px;
+	right:120px;
+}
+
+.top-button {
+    bottom:40px;
+	right:40px;
+}

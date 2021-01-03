@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero is-fullheight is-dark">
+    <div class="hero-body">
+      <div class="container has-text-centered">     
+        <div class="column is-6 is-offset-3 is-centered">
+            <h3 class="title has-text-white">Log in to</h3>
+            <img class="" src="{{url_for('static', filename='logo_white.png')}}" alt="Logo">
+            <hr class="mb-6">
+            <form class="mx-6 px-6 container" action="{{url_for('login')}}" method="POST" name="login_form" id="login_form">
+                <div class="field">
+                    <label for="username" class="label has-text-light has-text-weight-light has-text-left mb-1">Username:</label>
+                    <div class="control has-icons-left has-icons-right">
+                        <input class="input is-dark" id="username" type="text" placeholder="Username" name="username" autocomplete="off" autofocus>
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                        </span>
+                    </div>
+                </div>
+                <div class="field">
+                    <label for="password" class="label has-text-light has-text-weight-light has-text-left mb-1">Password:</label>
+                    <div class="control has-icons-left">
+                        <input class="input is-dark" id="password" type="password" placeholder="Password" name="password" autocomplete="on">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="control mt-5">
+                    <button class="button is-info is-fullwidth" type="submit", form="login_form" value="submit">Log In</button>
+                </div>
+            </form>
+            <hr class="my-6">
+            <p class="subtitle is-6 has-text-white">Don't have an account yet? <a href="#" class="has-text-danger" id="signup-link">Sign up now!</a></p>
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="modal">
+        <div class="modal-background close-modal"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Sign Up for Media Logbook</p>
+                <button class="delete close-modal" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <form class="mt-5 mb-6 mx-6 px-6 container" action="{{url_for('signup')}}" method="POST" name="signup_form" id="signup_form">
+                    <div class="field">
+                        <label for="username_signup" class="label has-text-weight-normal has-text-left mb-1">Username:</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <input class="input is-dark" id="username_signup" type="text" placeholder="Anything is fine." name="username_signup" autocomplete="off">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span class="icon is-small is-right">
+                            </span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="password_signup" class="label has-text-weight-normal has-text-left mb-1">Password:</label>
+                        <div class="control has-icons-left">
+                            <input class="input is-dark" id="password_signup" type="password" placeholder="Choose something strong!" name="password_signup" autocomplete="on">
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="control mt-5">
+                        <button class="button is-danger is-fullwidth" type="submit", form="signup_form" value="submit">Sign Up</button>
+                    </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot">
+            </footer>
+        </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block end %}
+    <script src="{{url_for('static', filename='home.js')}}"></script>
+{% endblock %}

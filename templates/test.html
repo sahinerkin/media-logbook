@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+{% block title %}Books{% endblock %}
+
+{% block content %}
+<section class="main-content columns has-background-light" style="height:100%">
+    <aside class="column is-one-fifth fixed-sidebar section has-background-dark m-0 p-0">
+
+        <div class="has-background-white ">
+            <a href="."><img class="m-0 py-0" src="{{url_for('static', filename='logo.svg')}}" alt="Media Logbook"></a>
+        </div>
+        
+        <div class="is-primary columns has-background-info has-text-weight-bold has-text-white is-centered m-0 px-6 py-5">
+            <p class="">@username</p>
+        </div>
+
+        <div class="px-0 py-5">
+            <p class="menu-label is-hidden-touch px-6">Menu bar</p>
+            <ul class="">             
+                <li class="menu-item">
+                    <a class="button is-dark level-left is-active px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                        <span class="icon"><i class="fas fa-book"></i></span>
+                        <span>Books</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                        <span class="icon"><i class="fas fa-film"></i></span>
+                        <span>Movies</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                        <span class="icon"><i class="fas fa-compact-disc"></i></span>
+                        <span>Series</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                        <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
+                        <span>Other</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class=" mx-5 mt-6">
+                <li class="menu-item my-2">
+                    <a class="button m-0 py-5 is-outlined is-rounded is-danger is-fullwidth" href="#">Log out</a>
+                </li>
+            </ul> 
+        </div>
+
+    </aside>
+
+    <div class="container content-container column">
+        
+        <div class="section">
+            <h1 class="title">Books</h1>
+            
+            <div class="columns is-multiline m-2">
+                <div class="has-background-primary is-5 m-3 px-4 column card">
+                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-book"></i> 1984</p>
+                    <p class="author subtitle is-italic has-text-weight-light">by George Orwell</p>
+                    <p class="language"><span class="has-text-weight-bold">Language: </span>English</p>
+                    <p class="no_pages"><span class="has-text-weight-bold">Number of pages: </span>-</p>
+                    <p class="isbn"><span class="has-text-weight-bold">ISBN: </span>-</p>
+                    <p class="genres"><span class="has-text-weight-bold">Genres: </span>-</p>
+                    <p class="owned-status has-text-right"><i class="fas fa-boxes"></i> You do NOT have it on your shelf.</p>
+                    <p class="completion-status has-text-right"><i class="fas fa-check"></i> You have completed it.</p>
+                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> You rated it 8/10.</p>
+                    <div class="buttons is-right mt-4">
+                        <button class="button is-primary is-inverted is-outlined">
+                            <i class="far fa-edit mr-2"></i>
+                            <p>Edit</p>
+                        </button>
+                        <button class="button is-primary is-inverted is-outlined">
+                            <i class="far fa-trash-alt mr-2"></i>
+                            <p>Delete</p>
+                        </button>
+                    </div>
+                </div>
+                <div class="has-background-danger is-6 m-3 px-4 column card">
+                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-book"></i> The Hitchhiker's Guide to the Galaxy</p>
+                    <p class="author subtitle is-italic has-text-weight-light">by Douglas Adams (1979)</p>
+                    <p class="language"><span class="has-text-weight-bold">Language: </span>English</p>
+                    <p class="no_pages"><span class="has-text-weight-bold">Number of pages: </span>193</p>
+                    <p class="isbn"><span class="has-text-weight-bold">ISBN: </span>978-0345418913</p>
+                    <p class="genres"><span class="has-text-weight-bold">Genres: </span>-</p>
+                    <p class="owned-status has-text-right"><i class="fas fa-boxes"></i> You have it on your shelf.</p>
+                    <p class="completion-status has-text-right"><i class="far fa-dot-circle"></i> You are currently reading it.</p>
+                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> You haven't rated it yet.</p>
+                    <div class="buttons is-right mt-4">
+                        <button class="button is-danger is-inverted is-outlined">
+                            <i class="far fa-edit mr-2"></i>
+                            <p>Edit</p>
+                        </button>
+                        <button class="button is-danger is-inverted is-outlined">
+                            <i class="far fa-trash-alt mr-2"></i>
+                            <p>Delete</p>
+                        </button>
+                    </div>
+                </div>
+                <div class="has-background-info is-6 m-3 px-4 column card">
+                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-book"></i> Bir Bilim Adamının Romanı</p>
+                    <p class="author subtitle is-italic has-text-weight-light">by Oğuz Atay (1975)</p>
+                    <p class="language"><span class="has-text-weight-bold">Language: </span>Turkish</p>
+                    <p class="no_pages"><span class="has-text-weight-bold">Number of pages: </span>283</p>
+                    <p class="isbn"><span class="has-text-weight-bold">ISBN: </span>-</p>
+                    <p class="genres"><span class="has-text-weight-bold">Genres: </span>-</p>
+                    <p class="owned-status has-text-right"><i class="fas fa-boxes"></i> You have it on your shelf.</p>
+                    <p class="completion-status has-text-right"><i class="fas fa-check"></i> You have completed it.</p>
+                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> You rated it 10/10.</p>
+                    <div class="buttons is-right mt-4">
+                        <button class="button is-info is-inverted is-outlined">
+                            <i class="far fa-edit mr-2"></i>
+                            <p>Edit</p>
+                        </button>
+                        <button class="button is-info is-inverted is-outlined">
+                            <i class="far fa-trash-alt mr-2"></i>
+                            <p>Delete</p>
+                        </button>
+                    </div>
+                    
+                </div>
+                <div class="has-background-success is-5 m-3 px-4 column card">
+                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-book"></i> An Introduction to Database Systems</p>
+                    <p class="author subtitle is-italic has-text-weight-light">by Chris J. Date</p>
+                    <p class="language"><span class="has-text-weight-bold">Language: </span>English</p>
+                    <p class="no_pages"><span class="has-text-weight-bold">Number of pages: </span>-</p>
+                    <p class="isbn"><span class="has-text-weight-bold">ISBN: </span>-</p>
+                    <p class="genres"><span class="has-text-weight-bold">Genres: </span>-</p>
+                    <p class="owned-status has-text-right"><i class="fas fa-boxes"></i> You do NOT have it on your shelf.</p>
+                    <p class="completion-status has-text-right"><i class="fas fa-times"></i> You haven't read it yet.</p>
+                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> You rated it 6/10.</p>
+                    <div class="buttons is-right mt-4">
+                        <button class="button is-success is-inverted is-outlined">
+                            <i class="far fa-edit mr-2"></i>
+                            <p>Edit</p>
+                        </button>
+                        <button class="button is-success is-inverted is-outlined">
+                            <i class="far fa-trash-alt mr-2"></i>
+                            <p>Delete</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+</section>
+{% endblock %}

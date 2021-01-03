@@ -1,0 +1,8 @@
+// implement edit logic and functions
+// add genres logic
+// generalize books page for movies, series, and others
+// move to actual database
+
+
+// LATER IMPLEMENTATION:
+// Filter on categories, completion status and owned
