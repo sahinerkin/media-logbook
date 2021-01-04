@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set user = getUser(user_id) %}
-{% block title %}Books (@{{user.username}}){% endblock %}
+{% block title %}Books (@{{user[1]}}){% endblock %}
 
 {% block content %}
 <section class="main-content columns has-background-light mb-0" style="height:100%">
@@ -14,7 +14,7 @@
         </div>
         
         <div class="columns has-background-info has-text-weight-bold has-text-white is-centered m-0 px-6 py-5">
-            <p class="">Books of {{user.username}}</p>
+            <p class="">Books of {{user[1]}}</p>
         </div>
 
         <div class="px-0 py-5">
@@ -65,64 +65,65 @@
                 {% set boxColors = ["primary","danger","info","success"] %}
                 {% set boxSizes = [5, 6, 6, 5] %}
                 {% set ns = namespace(boxCount = 0) %}
-                {% for usercontent in usercontents if usercontent.user_id == user_id %}
-                {% set content = getContent(usercontent.content_id) %}
-                {% if content.content_type == "book" %}
-                {% set book = getBook(content.type_specific_id) %}
+                {% if usercontents is not none %}
+                {% for usercontent in usercontents if usercontent[0] == user_id %}
+                {% set content = getContent(usercontent[1]) %}
+                {% if content[1] == "book" %}
+                {% set book = getBook(content[2]) %}
                 {% set boxSelector = ns.boxCount%4 %}
                 <div class="has-background-{{boxColors[boxSelector]}} is-{{boxSizes[boxSelector]}} m-3 px-4 column card">
-                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-book"></i> {{content.title}}</p>
+                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-book"></i> {{content[3]}}</p>
                     <p class="author subtitle is-italic has-text-weight-light">
-                        {% if book.author is not none %}by {{book.author}} {% endif %}
-                        {% if book.release_year is not none %}({{book.release_year}}){% endif %}
+                        {% if book[1] is not none %}by {{book[1]}} {% endif %}
+                        {% if book[2] is not none %}({{book[2]}}){% endif %}
                     </p>
-                    <p class="language"><span class="has-text-weight-bold">Language: </span>{{book.language}}</p>
-                    <p class="no_pages"><span class="has-text-weight-bold">Number of pages: </span>{{book.no_pages}}</p>
-                    <p class="isbn"><span class="has-text-weight-bold">ISBN: </span>{{book.isbn}}</p>
+                    <p class="language"><span class="has-text-weight-bold">Language: </span>{{book[3]}}</p>
+                    <p class="no_pages"><span class="has-text-weight-bold">Number of pages: </span>{{book[4]}}</p>
+                    <p class="isbn"><span class="has-text-weight-bold">ISBN: </span>{{book[5]}}</p>
                     <p class="genres"><span class="has-text-weight-bold">Genres: </span>-</p>
 
-                    {% if usercontent.owned is not none %}
+                    {% if usercontent[3] is not none %}
                     <p class="owned-status has-text-right"><i class="fas fa-boxes"></i>
-                        {% if usercontent.owned %} Owned {% else %} Not Owned {% endif %}
+                        {% if usercontent[3] %} Owned {% else %} Not Owned {% endif %}
                     </p>
                     {% else %}<br>{% endif %}
 
-                    {% if usercontent.completion_status is not none %}
+                    {% if usercontent[2] is not none %}
                     <p class="completion-status has-text-right"><i class="fas fa-check"></i>
-                    {% if usercontent.completion_status %} Completed {% else %} Incompleted {% endif %}
+                    {% if usercontent[2] %} Completed {% else %} Incompleted {% endif %}
                     </p>
                     {% else %}<br>{% endif %}
 
-                    {% if usercontent.user_rating is not none %}
-                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{usercontent.user_rating}}/10</p>
+                    {% if usercontent[4] is not none %}
+                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{usercontent[4]}}/10</p>
                     {% else %}<br>{% endif %}
 
                     {% if currentuser_id == user_id %}
                     <form action="/delete" method="POST" id="delete"></form>
                     <div class="buttons is-right mt-4">
-                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined edit-content" id="edit-content-{{usercontent.content_id}}">
-                            <i class="far fa-edit mr-2 edit-content" id="edit-content-{{usercontent.content_id}}"></i>
-                            <p class="edit-content" id="edit-content-{{usercontent.content_id}}">Edit</p>
+                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined edit-content" id="edit-content-{{usercontent[1]}}">
+                            <i class="far fa-edit mr-2 edit-content" id="edit-content-{{usercontent[1]}}"></i>
+                            <p class="edit-content" id="edit-content-{{usercontent[1]}}">Edit</p>
                         </button>
-                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined" type="submit" name="delete" form="delete" value={{usercontent.content_id}}>
+                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined" type="submit" name="delete" form="delete" value={{usercontent[1]}}>
                             <i class="far fa-trash-alt mr-2"></i>
                             <p>Delete</p>
                         </button>
                     </div>
 
-                    <div class="modal edit-modal" id="edit-modal-{{usercontent.content_id}}">
-                        <div class="modal-background close-edit-modal" id="close-edit-modal-{{usercontent.content_id}}"></div>
+                    <div class="modal edit-modal" id="edit-modal-{{usercontent[1]}}">
+                        <div class="modal-background close-edit-modal" id="close-edit-modal-{{usercontent[1]}}"></div>
                         <div class="modal-card">
                             <header class="modal-card-head">
                                 <p class="modal-card-title">Edit book</p>
-                                <button class="delete close-edit-modal" id="close-edit-modal-{{usercontent.content_id}}" aria-label="close"></button>
+                                <button class="delete close-edit-modal" id="close-edit-modal-{{usercontent[1]}}" aria-label="close"></button>
                             </header>
                             <section class="modal-card-body">
-                                <form class="mt-3 mb-5 mx-6 px-6 container" action="{{url_for('edit', content_id=usercontent.content_id)}}" method="POST" id="edit-form-{{usercontent.content_id}}">
+                                <form class="mt-3 mb-5 mx-6 px-6 container" action="{{url_for('edit', content_id=usercontent[1])}}" method="POST" id="edit-form-{{usercontent[1]}}">
                                     <div class="field">
                                         <label for="book_title" class="label has-text-weight-normal has-text-left mb-1">Title:</label>
                                         <div class="control has-icons-left has-icons-right">
-                                            <input class="input is-dark" id="book_title" type="text" value="{{content.title}}" name="book_title" autocomplete="off">
+                                            <input class="input is-dark" id="book_title" type="text" value="{{content[3]}}" name="book_title" autocomplete="off">
                                             <span class="icon is-small is-left">
                                                 <i class="fas fa-book"></i>
                                             </span>
@@ -134,7 +135,7 @@
                                     <div class="field">
                                         <label for="author" class="label has-text-weight-normal has-text-left mb-1">Author:</label>
                                         <div class="control has-icons-left has-icons-right">
-                                            <input class="input is-dark" id="author" type="text" value="{{book.author}}" name="author" autocomplete="off">
+                                            <input class="input is-dark" id="author" type="text" value="{{book[1]}}" name="author" autocomplete="off">
                                             <span class="icon is-small is-left">
                                                 <i class="fas fa-pen-alt"></i>
                                             </span>
@@ -148,7 +149,7 @@
                                             <div class="field">
                                                 <label for="release_year" class="label has-text-weight-normal has-text-left mb-1">Release year:</label>
                                                 <div class="control has-icons-left has-icons-right">
-                                                    <input class="input is-dark pr-3" id="release_year" type="number" value="{{book.release_year}}" name="release_year" autocomplete="off">
+                                                    <input class="input is-dark pr-3" id="release_year" type="number" value="{{book[2]}}" name="release_year" autocomplete="off">
                                                     <span class="icon is-small is-left">
                                                         <i class="fas fa-calendar-alt"></i>
                                                     </span>
@@ -159,7 +160,7 @@
                                             <div class="field">
                                                 <label for="language" class="label has-text-weight-normal has-text-left mb-1">Language:</label>
                                                 <div class="control has-icons-left has-icons-right">
-                                                    <input class="input is-dark" id="language" type="text" value="{{book.language}}" name="language" autocomplete="off">
+                                                    <input class="input is-dark" id="language" type="text" value="{{book[3]}}" name="language" autocomplete="off">
                                                     <span class="icon is-small is-left">
                                                         <i class="fas fa-globe"></i>
                                                     </span>
@@ -175,7 +176,7 @@
                                             <div class="field">
                                                 <label for="no_pages" class="label has-text-weight-normal has-text-left mb-1">Number of pages:</label>
                                                 <div class="control has-icons-left has-icons-right">
-                                                    <input class="input is-dark pr-3" id="no_pages" type="number" value="{{book.no_pages}}" name="no_pages" min=0 autocomplete="off">
+                                                    <input class="input is-dark pr-3" id="no_pages" type="number" value="{{book[4]}}" name="no_pages" min=0 autocomplete="off">
                                                     <span class="icon is-small is-left">
                                                         <i class="fas fa-file"></i>
                                                     </span>
@@ -186,7 +187,7 @@
                                             <div class="field">
                                                 <label for="isbn" class="label has-text-weight-normal has-text-left mb-1">ISBN:</label>
                                                 <div class="control has-icons-left has-icons-right">
-                                                    <input class="input is-dark" id="isbn" type="text" value="{{book.isbn}}" name="isbn" autocomplete="off">
+                                                    <input class="input is-dark" id="isbn" type="text" value="{{book[5]}}" name="isbn" autocomplete="off">
                                                     <span class="icon is-small is-left">
                                                         <i class="fas fa-barcode"></i>
                                                     </span>
@@ -201,14 +202,14 @@
                                         <div class="field control">
                                             <label class="checkbox">
                                                 <input type="checkbox" name="completed"
-                                                {% if usercontent.completion_status is true %} checked {% endif %}>
+                                                {% if usercontent[2] is true %} checked {% endif %}>
                                                 Completed?
                                             </label>
                                         </div>
                                         <div class="field control">
                                             <label class="checkbox">
                                                 <input type="checkbox" name="owned"
-                                                {% if usercontent.owned is true %} checked {% endif %}>
+                                                {% if usercontent[3] is true %} checked {% endif %}>
                                                 Owned?
                                             </label>
                                         </div>
@@ -261,8 +262,8 @@
                                 </form>
                             </section>
                             <footer class="modal-card-foot buttons is-right">
-                                <button class="button is-info" type="submit", form="edit-form-{{usercontent.content_id}}" value="submit">Edit</button>
-                                <button class="button close-edit-modal" id="close-edit-modal-{{usercontent.content_id}}">Cancel</button>
+                                <button class="button is-info" type="submit", form="edit-form-{{usercontent[1]}}" value="submit">Edit</button>
+                                <button class="button close-edit-modal" id="close-edit-modal-{{usercontent[1]}}">Cancel</button>
                             </footer>
                         </div>
                     </div>
@@ -272,7 +273,7 @@
                 {% set ns.boxCount = ns.boxCount + 1 %}
                 {% endif %}
                 {% endfor %}
-                
+                {% endif %}
                 <span id="bottom"></span>
             </div>
         </div>
