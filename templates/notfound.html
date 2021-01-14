@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block title %}User not found: {{ username }}{% endblock %}
+{% block content %}
+
+
+<section class="hero is-dark is-fullheight">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title is-2 has-text-weight-normal">User "{{ username }}" not found!</h1>
+            <h2 class="subtitle is-4 has-text-weight-light mt-2">
+                {% if request.referrer %}
+                <a href="{{ request.referrer }}" class="has-text-danger">Click here to go back!</a>
+                {% else %}
+                <a href="{{ url_for('home') }}" class="has-text-danger">Click here to go home!</a>
+                {% endif %}
+            </h2>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

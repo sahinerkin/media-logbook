@@ -1,8 +1,28 @@
-// implement database.py functions for movies and series
-// implement or generalize view.py functions for movies, series, and others
-// generalize books page for movies, series, and others
-
-// add genres logic
+// implement database.py functions for series
+// implement or generalize view.py functions for series and others
+// generalize books and movies page for series and others
 
 // LATER IMPLEMENTATION:
 // Filter on categories, completion status and owned
+
+
+
+// USE INNER JOIN for contents
+
+SELECT content.content_id, movie_id, title, author, release_year, language, no_pages, isbn, completion_status, owned, user_rating   
+FROM user_content     
+INNER JOIN content
+ON user_content.content_id = content.content_id
+INNER JOIN book
+ON content.type_specific_id = book.book_id
+WHERE content.content_type = 'book';
+
+SELECT content.content_id, movie_id, title, director, release_year, language, length, imdb_id, completion_status, owned, user_rating   
+FROM user_content     
+INNER JOIN content
+ON user_content.content_id = content.content_id
+INNER JOIN movie
+ON content.type_specific_id = movie.movie_id
+WHERE content.content_type = 'movie';
+
+// maybe implement "join select function" first with columns, table, "join" phrases, and condition as parameters
