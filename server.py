@@ -21,8 +21,10 @@ def create_app():
     app.add_url_rule("/test", view_func=view.test)
     app.add_url_rule("/<string:username>/books", view_func=view.books)
     app.add_url_rule("/<string:username>/movies", view_func=view.movies)
+    app.add_url_rule("/<string:username>/series", view_func=view.series)
     app.add_url_rule("/<string:username>/books", methods=["GET", "POST"], view_func=view.add_book)
     app.add_url_rule("/<string:username>/movies", methods=["GET", "POST"], view_func=view.add_movie)
+    app.add_url_rule("/<string:username>/series", methods=["GET", "POST"], view_func=view.add_series)
     app.add_url_rule("/delete", methods=["POST"], view_func=view.delete)
     app.add_url_rule("/edit/<int:content_id>", methods=["POST"], view_func=view.edit)
 

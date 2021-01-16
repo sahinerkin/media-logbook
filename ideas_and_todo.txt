@@ -1,13 +1,12 @@
-// implement database.py functions for series
-// implement or generalize view.py functions for series and others
-// generalize books and movies page for series and others
+// implement or generalize view.py functions for others
+// generalize books, movies, and series page for others
 
 // LATER IMPLEMENTATION:
 // Filter on categories, completion status and owned
 
 
 
-// USE INNER JOIN for contents
+// INNER JOIN queries for contents:
 
 SELECT content.content_id, movie_id, title, author, release_year, language, no_pages, isbn, completion_status, owned, user_rating   
 FROM user_content     
@@ -25,4 +24,10 @@ INNER JOIN movie
 ON content.type_specific_id = movie.movie_id
 WHERE content.content_type = 'movie';
 
-// maybe implement "join select function" first with columns, table, "join" phrases, and condition as parameters
+SELECT content.content_id, series_id, title, release_year, language, no_seasons, imdb_id, completion_status, owned, user_rating   
+FROM user_content     
+INNER JOIN content
+ON user_content.content_id = content.content_id
+INNER JOIN series
+ON content.type_specific_id = series.series_id
+WHERE content.content_type = 'series';

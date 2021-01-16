@@ -110,6 +110,18 @@ def movies(username):
     
     return render_template("notfound.html", username=username)
 
+def series(username):
+    db = current_app.config["db"]
+    currentuser_id = current_app.config["currentuser"]
+    getUser = db.getUser
+    user_id = db.getUserByUsername(username)
+    getSeriesInfosFor = db.getSeriesInfosFor
+    getGenresFor = db.getGenresFor
+    if user_id:
+        return render_template("series.html", user_id=user_id, currentuser_id = currentuser_id, getUser=getUser, getSeriesInfosFor=getSeriesInfosFor, getGenresFor=getGenresFor)
+    
+    return render_template("notfound.html", username=username)
+
 def add_book(username):
     if request.method == "GET":
         return books(username)
@@ -186,6 +198,45 @@ def add_movie(username):
 
     return redirect(url_for("movies", username=username))
 
+
+def add_series(username):
+    if request.method == "GET":
+        return series(username)
+
+    db = current_app.config["db"]
+    currentuser_id = current_app.config["currentuser"]
+
+    title = request.form.get("content_title").strip()
+
+    if title == "":
+        return series(username)
+
+    release_year = request.form.get("release_year")
+    language = request.form.get("language").strip()
+    no_seasons = request.form.get("no_seasons")
+    imdb_id = request.form.get("imdb_id").strip()
+    completed = request.form.get("completed")
+    owned = request.form.get("owned")
+    user_rating = request.form.get("user_rating")
+    genresList = request.form.get("genres").split(',')
+
+
+    user_id = db.getUserByUsername(username)
+    if user_id != currentuser_id:
+        return series(username)
+    
+    series_id = db.addSeries(release_year=release_year, language=language, no_seasons=no_seasons, imdb_id=imdb_id)
+    content_id = db.addContent(title, content_type="series", type_specific_id=series_id)
+    db.addUserContent(user_id, content_id, completion_status=completed, owned=owned, user_rating=user_rating)
+
+    for genreString in genresList:
+        genre = genreString.strip()
+        if genre != '':
+            db.addContentGenre(content_id, genre)
+
+    return redirect(url_for("series", username=username))
+
+
 def delete():
     if request.method == "GET":
         return redirect(request.referrer)
@@ -199,8 +250,6 @@ def delete():
     if uc is None:
         return redirect(request.referrer)
 
-    # GENERALIZE THE FUNCTION FOR ALL TYPES OF CONTENT
-    # WITH IF BLOCK (CONTENT_TYPE)
 
     content = db.getContent(content_id)
     content_type = content[1]
@@ -218,10 +267,12 @@ def delete():
         movie_id = content[2]
         db.deleteMovie(movie_id)
 
-    # elif content_type == "series":
-    #     # delete series
+    elif content_type == "series":
+        series_id = content[2]
+        db.deleteSeries(series_id)
 
     return redirect(request.referrer)
+
 
 def edit(content_id):
     if request.method == "GET":
@@ -261,8 +312,6 @@ def edit(content_id):
     content = db.getContent(content_id)
     content_type = content[1]
 
-    # GENERALIZE THE FUNCTION FOR ALL TYPES OF CONTENT
-    # WITH IF BLOCK (CONTENT_TYPE)
 
     if content_type == "book":
         author = request.form.get("author").strip()
@@ -283,9 +332,15 @@ def edit(content_id):
 
         movie_id = content[2]
         db.updateMovie(movie_id, director=director, release_year=release_year, language=language, length=length, imdb_id=imdb_id)
-    
-    # elif content_type == "series":
-    #     # edit series
+
+    elif content_type == "series":
+        release_year = request.form.get("release_year")
+        language = request.form.get("language").strip()
+        no_seasons = request.form.get("no_seasons")
+        imdb_id = request.form.get("imdb_id").strip()
+
+        series_id = content[2]
+        db.updateSeries(series_id, release_year=release_year, language=language, no_seasons=no_seasons, imdb_id=imdb_id)
 
     return redirect(request.referrer)
 

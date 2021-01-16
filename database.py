@@ -272,11 +272,9 @@ class Database:
             
         if isbn is not None and isbn != "":
             isbn = isbn.replace("'", "''")
-            settings += "isbn = '{}',".format(isbn)
+            settings += "isbn = '{}'".format(isbn)
         else:
-            settings += "isbn = NULL,"
-                        
-        settings = settings[:-1]
+            settings += "isbn = NULL"
 
         myDB.updateRows("book", settings, condition)
 
@@ -369,10 +367,90 @@ class Database:
             
         if imdb_id is not None and imdb_id != "":
             imdb_id = imdb_id.replace("'", "''")
-            settings += "imdb_id = '{}',".format(imdb_id)
+            settings += "imdb_id = '{}'".format(imdb_id)
         else:
-            settings += "imdb_id = NULL,"
-                        
-        settings = settings[:-1]
+            settings += "imdb_id = NULL"
 
         myDB.updateRows("movie", settings, condition)
+
+    def addSeries(self, release_year=None, language=None, no_seasons=None, imdb_id=None):
+        columns = ""
+        values = ""
+        
+        columns += "release_year,"
+        if release_year is not None and release_year != '':
+            values += "'{}',".format(release_year)
+        else:
+            values += "NULL,"
+        
+        columns += "language,"
+        if language is not None and language != '':
+            language = language.replace("'", "''")
+            values += "'{}',".format(language)
+        else:
+            values += "NULL,"
+        
+        columns += "no_seasons,"
+        if no_seasons is not None and no_seasons != '':
+            values += "'{}',".format(no_seasons)
+        else:
+            values += "NULL,"
+        
+        columns += "imdb_id"
+        if imdb_id is not None and imdb_id != '':
+            imdb_id = imdb_id.replace("'", "''")
+            values += "'{}'".format(imdb_id)
+        else:
+            values += "NULL"
+
+        series_id = myDB.insertTable("series", columns, values, "series_id")[0]
+        return series_id
+    
+
+    def getSeriesInfosFor(self, user_id):
+        columns = "content.content_id, series_id, title, release_year, language, no_seasons, imdb_id, completion_status, owned, user_rating"
+
+        joinPhrase = """
+                     INNER JOIN content
+                     ON user_content.content_id = content.content_id
+                     INNER JOIN series
+                     ON content.type_specific_id = series.series_id
+                     """
+        
+        condition = "user_id = {} AND content.content_type = 'series'".format(user_id)
+
+        return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)
+
+
+    def deleteSeries(self, series_id):
+        condition = "series_id = '{}'".format(series_id)
+        myDB.deleteRows("series", condition)
+
+    def updateSeries(self, series_id, release_year=None, language=None, no_seasons=None, imdb_id=None):
+        condition = "series_id = '{}'".format(series_id)
+        settings = ""
+
+        if release_year is not None and release_year != "":
+            settings += "release_year = '{}',".format(release_year)
+        else:
+            settings += "release_year = NULL,"
+            
+        if language is not None and language != "":
+            language = language.replace("'", "''")
+            settings += "language = '{}',".format(language)
+        else:
+            settings += "language = NULL,"
+            
+        if no_seasons is not None and no_seasons != "":
+            settings += "no_seasons = '{}',".format(no_seasons)
+        else:
+            settings += "no_seasons = NULL,"
+            
+        if imdb_id is not None and imdb_id != "":
+            imdb_id = imdb_id.replace("'", "''")
+            settings += "imdb_id = '{}'".format(imdb_id)
+        else:
+            settings += "imdb_id = NULL"
+
+        myDB.updateRows("series", settings, condition)
+
