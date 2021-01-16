@@ -118,6 +118,18 @@ def series(username):
     
     return render_template("notfound.html", username=username)
 
+def others(username):
+    db = current_app.config["db"]
+    currentuser_id = current_app.config["currentuser"]
+    getUser = db.getUser
+    user_id = db.getUserByUsername(username)
+    getOtherInfosFor = db.getOtherInfosFor
+    getGenresFor = db.getGenresFor
+    if user_id:
+        return render_template("other.html", user_id=user_id, currentuser_id = currentuser_id, getUser=getUser, getOtherInfosFor=getOtherInfosFor, getGenresFor=getGenresFor)
+    
+    return render_template("notfound.html", username=username)
+
 def add_book(username):
     if request.method == "GET":
         return books(username)
@@ -232,6 +244,38 @@ def add_series(username):
 
     return redirect(url_for("series", username=username))
 
+def add_other(username):
+    if request.method == "GET":
+        return others(username)
+
+    db = current_app.config["db"]
+    currentuser_id = current_app.config["currentuser"]
+
+    title = request.form.get("content_title").strip()
+
+    if title == "":
+        return others(username)
+
+    completed = request.form.get("completed")
+    owned = request.form.get("owned")
+    user_rating = request.form.get("user_rating")
+    genresList = request.form.get("genres").split(',')
+
+
+    user_id = db.getUserByUsername(username)
+    if user_id != currentuser_id:
+        return others(username)
+    
+    content_id = db.addContent(title)
+    db.addUserContent(user_id, content_id, completion_status=completed, owned=owned, user_rating=user_rating)
+
+    for genreString in genresList:
+        genre = genreString.strip()
+        if genre != '':
+            db.addContentGenre(content_id, genre)
+
+    return redirect(url_for("others", username=username))
+
 
 def delete():
     if request.method == "GET":
@@ -256,8 +300,7 @@ def delete():
     
     if content_type == "book":
         book_id = content[2]
-        db.deleteBook(book_id)
-        
+        db.deleteBook(book_id)  
 
     elif content_type == "movie":
         movie_id = content[2]

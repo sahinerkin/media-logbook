@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set user = getUser(user_id) %}
-{% block title %}Series (@{{user[1]}}){% endblock %}
+{% block title %}Others (@{{user[1]}}){% endblock %}
 
 {% block content %}
 <section class="main-content columns has-background-light m-0" style="height:100%">
@@ -14,10 +14,10 @@
         </div>
         
         <div class="has-background-info-dark has-text-weight-bold has-text-white is-centered m-0 px-6 py-5">
-            <p class="pl-2 mb-1">Series of:</p>
+            <p class="pl-2 mb-1">Other contents:</p>
             <form action="{{url_for('profile')}}" method="POST" id="">
                 <input class="input has-background-info has-text-weight-bold has-text-white" type="text" name="user_profile" value="{{user[1]}}" id="user_profile" autocomplete="off" style="border: none;">
-                <input type="hidden" name="page_name" id="page_name" value="series">
+                <input type="hidden" name="page_name" id="page_name" value="others">
             </form>
         </div>
 
@@ -37,13 +37,13 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="button is-dark level-left is-active px-6 py-5 has-text-grey-lighter is-fullwidth" href="{{url_for('series', username=user[1])}}">
+                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="{{url_for('series', username=user[1])}}">
                         <span class="icon"><i class="fas fa-compact-disc"></i></span>
                         <span>Series</span>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="{{url_for('others', username=user[1])}}">
+                    <a class="button is-dark level-left is-active px-6 py-5 has-text-grey-lighter is-fullwidth" href="{{url_for('others', username=user[1])}}">
                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
                         <span>Other</span>
                     </a>
@@ -69,130 +69,64 @@
                 {% set boxColors = ["primary","danger","info","success"] %}
                 {% set boxSizes = [5, 6, 6, 5] %}
                 {% set ns = namespace(boxCount = 0) %}
-                {% for seriesInfos in getSeriesInfosFor(user_id) %}
+                {% for otherInfos in getOtherInfosFor(user_id) %}
                 {% set boxSelector = ns.boxCount%4 %}
-                {% set genresList = getGenresFor(seriesInfos[0]) %}
+                {% set genresList = getGenresFor(otherInfos[0]) %}
                 <div class="has-background-{{boxColors[boxSelector]}} is-{{boxSizes[boxSelector]}} m-3 px-4 column card">
-                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-compact-disc"></i> {{seriesInfos[2]}}
-                        <span class="has-text-weight-normal">{% if seriesInfos[3] is not none %}({{seriesInfos[3]}}){% endif %}</span>
-                    </p>
-                    <p class="language"><span class="has-text-weight-bold">Language: </span>
-                        {% if seriesInfos[4] is not none %}{{seriesInfos[4]}}{% else %}Unknown{% endif %}
-                    </p>
-                    <p class="no_seasons"><span class="has-text-weight-bold">Number of seasons: </span>
-                        {% if seriesInfos[5] is not none %}{{seriesInfos[5]}}{% else %}Unknown{% endif %}
-                    </p>
-                    <p class="imdb_id"><span class="has-text-weight-bold">IMDB id: </span>
-                        {% if seriesInfos[6] is not none %}{{seriesInfos[6]}}{% else %}Unknown{% endif %}
-                    </p>
+                    <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-ellipsis-h"></i> {{otherInfos[1]}}</p>
                     <p class="genres"><span class="has-text-weight-bold">Genres:</span>
                             {% if genresList is not none %}{% for genre in genresList %}
                             <span class="tag is-{{boxColors[boxSelector]}} is-light">{{genre[1]}}</span>
                             {% endfor %}{% else %}<br>{% endif %}
                     </p>
-                        
-                    
-                    {% if seriesInfos[8] is not none %}
+
+                    {% if otherInfos[3] is not none %}
                     <p class="owned-status has-text-right"><i class="fas fa-boxes"></i>
-                        {% if seriesInfos[8] %} Owned {% else %} Not Owned {% endif %}
+                        {% if otherInfos[3] %} Owned {% else %} Not Owned {% endif %}
                     </p>
                     {% else %}<br>{% endif %}
                     
-                    {% if seriesInfos[7] is not none %}
+                    {% if otherInfos[2] is not none %}
                     <p class="completion-status has-text-right"><i class="fas fa-check"></i>
-                    {% if seriesInfos[7] %} Completed {% else %} Incompleted {% endif %}
+                    {% if otherInfos[2] %} Completed {% else %} Incompleted {% endif %}
                     </p>
                     {% else %}<br>{% endif %}
 
-                    {% if seriesInfos[9] is not none %}
-                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{seriesInfos[9]}}/10</p>
+                    {% if otherInfos[4] is not none %}
+                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{otherInfos[4]}}/10</p>
                     {% else %}<br>{% endif %}
 
                     {% if currentuser_id == user_id %}
                     <form action="/delete" method="POST" id="delete"></form>
                     <div class="buttons is-right mt-4">
-                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined edit-content" id="edit-content-{{seriesInfos[0]}}">
-                            <i class="far fa-edit mr-2 edit-content" id="edit-content-{{seriesInfos[0]}}"></i>
-                            <p class="edit-content" id="edit-content-{{seriesInfos[0]}}">Edit</p>
+                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined edit-content" id="edit-content-{{otherInfos[0]}}">
+                            <i class="far fa-edit mr-2 edit-content" id="edit-content-{{otherInfos[0]}}"></i>
+                            <p class="edit-content" id="edit-content-{{otherInfos[0]}}">Edit</p>
                         </button>
-                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined" type="submit" name="delete" form="delete" value={{seriesInfos[0]}}>
+                        <button class="button is-{{boxColors[boxSelector]}} is-inverted is-outlined" type="submit" name="delete" form="delete" value={{otherInfos[0]}}>
                             <i class="far fa-trash-alt mr-2"></i>
                             <p>Delete</p>
                         </button>
                     </div>
 
-                    <div class="modal edit-modal" id="edit-modal-{{seriesInfos[0]}}">
-                        <div class="modal-background close-edit-modal" id="close-edit-modal-{{seriesInfos[0]}}"></div>
+                    <div class="modal edit-modal" id="edit-modal-{{otherInfos[0]}}">
+                        <div class="modal-background close-edit-modal" id="close-edit-modal-{{otherInfos[0]}}"></div>
                         <div class="modal-card">
                             <header class="modal-card-head">
-                                <p class="modal-card-title">Edit series</p>
-                                <button class="delete close-edit-modal" id="close-edit-modal-{{seriesInfos[0]}}" aria-label="close"></button>
+                                <p class="modal-card-title">Edit</p>
+                                <button class="delete close-edit-modal" id="close-edit-modal-{{otherInfos[0]}}" aria-label="close"></button>
                             </header>
                             <section class="modal-card-body">
-                                <form class="mt-3 mb-5 mx-6 px-6 container" action="{{url_for('edit', content_id=seriesInfos[0])}}" method="POST" id="edit-form-{{seriesInfos[0]}}">
+                                <form class="mt-3 mb-5 mx-6 px-6 container" action="{{url_for('edit', content_id=otherInfos[0])}}" method="POST" id="edit-form-{{otherInfos[0]}}">
                                     <div class="field">
                                         <label for="content_title" class="label has-text-weight-normal has-text-left mb-1">Title:</label>
                                         <div class="control has-icons-left has-icons-right">
-                                            <input class="input is-dark" id="content_title" type="text" value="{{seriesInfos[2]}}" name="content_title" autocomplete="off">
+                                            <input class="input is-dark" id="content_title" type="text" value="{{otherInfos[1]}}" name="content_title" autocomplete="off">
                                             <span class="icon is-small is-left">
-                                                <i class="fas fa-compact-disc"></i>
+                                                <i class="fas fa-ellipsis-h"></i>
                                             </span>
                                             <span class="icon is-small is-right">
                                             </span>
-                                        </div>
-                                    </div>
-                
-                                    <div class="field is-horizontal">
-                                        <div class="field-body">
-                                            <div class="field">
-                                                <label for="release_year" class="label has-text-weight-normal has-text-left mb-1">Release year:</label>
-                                                <div class="control has-icons-left has-icons-right">
-                                                    <input class="input is-dark pr-3" id="release_year" type="number" value="{{seriesInfos[3]}}" name="release_year" autocomplete="off">
-                                                    <span class="icon is-small is-left">
-                                                        <i class="fas fa-calendar-alt"></i>
-                                                    </span>
-                                                    <span class="icon is-small is-right">
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <label for="language" class="label has-text-weight-normal has-text-left mb-1">Language:</label>
-                                                <div class="control has-icons-left has-icons-right">
-                                                    <input class="input is-dark" id="language" type="text" value="{{seriesInfos[4]}}" name="language" autocomplete="off">
-                                                    <span class="icon is-small is-left">
-                                                        <i class="fas fa-globe"></i>
-                                                    </span>
-                                                    <span class="icon is-small is-right">
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="field is-horizontal">
-                                        <div class="field-body">
-                                            <div class="field">
-                                                <label for="no_seasons" class="label has-text-weight-normal has-text-left mb-1">Number of seasons:</label>
-                                                <div class="control has-icons-left has-icons-right">
-                                                    <input class="input is-dark pr-3" id="no_seasons" type="number" value="{{seriesInfos[5]}}" name="no_seasons" min=0 autocomplete="off">
-                                                    <span class="icon is-small is-left">
-                                                        <i class="fas fa-hourglass-half"></i>
-                                                    </span>
-                                                    <span class="icon is-small is-right">
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div class="field">
-                                                <label for="imdb_id" class="label has-text-weight-normal has-text-left mb-1">IMDB id:</label>
-                                                <div class="control has-icons-left has-icons-right">
-                                                    <input class="input is-dark" id="imdb_id" type="text" value="{{seriesInfos[6]}}" name="imdb_id" autocomplete="off">
-                                                    <span class="icon is-small is-left">
-                                                        <i class="fab fa-imdb"></i>
-                                                    </span>
-                                                    <span class="icon is-small is-right">
-                                                    </span>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                     
@@ -200,14 +134,14 @@
                                         <div class="field control">
                                             <label class="checkbox">
                                                 <input type="checkbox" name="completed"
-                                                {% if seriesInfos[7] is true %} checked {% endif %}>
+                                                {% if otherInfos[2] is true %} checked {% endif %}>
                                                 Completed?
                                             </label>
                                         </div>
                                         <div class="field control">
                                             <label class="checkbox">
                                                 <input type="checkbox" name="owned"
-                                                {% if seriesInfos[8] is true %} checked {% endif %}>
+                                                {% if otherInfos[3] is true %} checked {% endif %}>
                                                 Owned?
                                             </label>
                                         </div>
@@ -215,7 +149,7 @@
                                     <div class="field mb-5">
                                         <label for="genres" class="label has-text-weight-normal has-text-left mb-1">Genres (comma seperated):</label>
                                         <div class="control has-icons-left has-icons-right">
-                                            <textarea class="textarea has-fixed-size is-dark" id="genres" placeholder="Mockumentary, Sitcom" name="genres" rows="4" autocomplete="off">{% if genresList is not none %}{% for genre in genresList %}{{ genre[1] }}, {% endfor %}{% endif %}</textarea>
+                                            <textarea class="textarea has-fixed-size is-dark" id="genres" placeholder="First-person shooter, Puzzle" name="genres" rows="4" autocomplete="off">{% if genresList is not none %}{% for genre in genresList %}{{ genre[1] }}, {% endfor %}{% endif %}</textarea>
                                         </div>
                                     </div>
                                     <label for="user_rating" class="label has-text-weight-normal has-text-left mb-1">Rating:</label>
@@ -261,12 +195,11 @@
                                             <i class="far fa-star"></i>
                                         </label>
                                       </div>
-                
                                 </form>
                             </section>
                             <footer class="modal-card-foot buttons is-right">
-                                <button class="button is-info" type="submit", form="edit-form-{{seriesInfos[0]}}" value="submit">Edit</button>
-                                <button class="button close-edit-modal" id="close-edit-modal-{{seriesInfos[0]}}">Cancel</button>
+                                <button class="button is-info" type="submit", form="edit-form-{{otherInfos[0]}}" value="submit">Edit</button>
+                                <button class="button close-edit-modal" id="close-edit-modal-{{otherInfos[0]}}">Cancel</button>
                             </footer>
                         </div>
                     </div>
@@ -300,7 +233,7 @@
         <div class="modal-background close-add-modal"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Add series</p>
+                <p class="modal-card-title">Add content</p>
                 <button class="delete close-add-modal" aria-label="close"></button>
             </header>
             <section class="modal-card-body">
@@ -308,65 +241,12 @@
                     <div class="field">
                         <label for="content_title" class="label has-text-weight-normal has-text-left mb-1">Title:</label>
                         <div class="control has-icons-left has-icons-right">
-                            <input class="input is-dark" id="content_title" type="text" placeholder="The Office" name="content_title" autocomplete="off">
+                            <input class="input is-dark" id="content_title" type="text" placeholder="Portal" name="content_title" autocomplete="off">
                             <span class="icon is-small is-left">
-                                <i class="fas fa-compact-disc"></i>
+                                <i class="fas fa-ellipsis-h"></i>
                             </span>
                             <span class="icon is-small is-right">
                             </span>
-                        </div>
-                    </div>
-
-                    <div class="field is-horizontal">
-                        <div class="field-body">
-                            <div class="field">
-                                <label for="release_year" class="label has-text-weight-normal has-text-left mb-1">Release year:</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input class="input is-dark pr-3" id="release_year" type="number" placeholder="2005" name="release_year" autocomplete="off">
-                                    <span class="icon is-small is-left">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </span>
-                                    <span class="icon is-small is-right">
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label for="language" class="label has-text-weight-normal has-text-left mb-1">Language:</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input class="input is-dark" id="language" type="text" placeholder="English" name="language" autocomplete="off">
-                                    <span class="icon is-small is-left">
-                                        <i class="fas fa-globe"></i>
-                                    </span>
-                                    <span class="icon is-small is-right">
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field is-horizontal">
-                        <div class="field-body">
-                            <div class="field">
-                                <label for="no_seasons" class="label has-text-weight-normal has-text-left mb-1">Number of seasons:</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input class="input is-dark pr-3" id="no_seasons" type="number" placeholder="9" name="no_seasons" min=0 autocomplete="off">
-                                    <span class="icon is-small is-left">
-                                        <i class="fas fa-hourglass-half"></i>
-                                    </span>
-                                    <span class="icon is-small is-right">
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label for="imdb_id" class="label has-text-weight-normal has-text-left mb-1">IMDB id:</label>
-                                <div class="control has-icons-left has-icons-right">
-                                    <input class="input is-dark" id="imdb_id" type="text" placeholder="tt0386676" name="imdb_id" autocomplete="off">
-                                    <span class="icon is-small is-left">
-                                        <i class="fab fa-imdb"></i>
-                                    </span>
-                                    <span class="icon is-small is-right">
-                                    </span>
-                                </div>
-                            </div>
                         </div>
                     </div>
                     
@@ -387,7 +267,7 @@
                     <div class="field mb-5">
                         <label for="genres" class="label has-text-weight-normal has-text-left mb-1">Genres (comma seperated):</label>
                         <div class="control has-icons-left has-icons-right">
-                            <textarea class="textarea has-fixed-size is-dark" id="genres" placeholder="Mockumentary, Sitcom" name="genres" rows="4" autocomplete="off"></textarea>
+                            <textarea class="textarea has-fixed-size is-dark" id="genres" placeholder="First-person shooter, Puzzle" name="genres" rows="4" autocomplete="off"></textarea>
                         </div>
                     </div>
                     <label for="user_rating" class="label has-text-weight-normal has-text-left mb-1">Rating:</label>

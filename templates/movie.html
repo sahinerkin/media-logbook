@@ -17,7 +17,7 @@
             <p class="pl-2 mb-1">Movies of:</p>
             <form action="{{url_for('profile')}}" method="POST" id="">
                 <input class="input has-background-info has-text-weight-bold has-text-white" type="text" name="user_profile" value="{{user[1]}}" id="user_profile" autocomplete="off" style="border: none;">
-                <input type="hidden" name="page_name" id="page_name" value="books">
+                <input type="hidden" name="page_name" id="page_name" value="movies">
             </form>
         </div>
 
@@ -26,7 +26,7 @@
             <ul class="">             
                 <li class="menu-item">
                     <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="{{url_for('books', username=user[1])}}">
-                        <span class="icon"><i class="fas fa-film"></i></span>
+                        <span class="icon"><i class="fas fa-book"></i></span>
                         <span>Books</span>
                     </a>
                 </li>
@@ -43,7 +43,7 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="#">
+                    <a class="button is-dark level-left px-6 py-5 has-text-grey-lighter is-fullwidth" href="{{url_for('others', username=user[1])}}">
                         <span class="icon"><i class="fas fa-ellipsis-h"></i></span>
                         <span>Other</span>
                     </a>
@@ -348,7 +348,7 @@
                             <div class="field">
                                 <label for="release_year" class="label has-text-weight-normal has-text-left mb-1">Release year:</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input class="input is-dark pr-3" id="release_year" type="number" name="release_year" autocomplete="off">
+                                    <input class="input is-dark pr-3" id="release_year" type="number" placeholder="2004" name="release_year" autocomplete="off">
                                     <span class="icon is-small is-left">
                                         <i class="fas fa-calendar-alt"></i>
                                     </span>
@@ -374,7 +374,7 @@
                             <div class="field">
                                 <label for="length" class="label has-text-weight-normal has-text-left mb-1">Length (minutes):</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input class="input is-dark pr-3" id="length" type="number" placeholder="" name="length" min=0 autocomplete="off">
+                                    <input class="input is-dark pr-3" id="length" type="number" placeholder="108" name="length" min=0 autocomplete="off">
                                     <span class="icon is-small is-left">
                                         <i class="fas fa-hourglass-half"></i>
                                     </span>
@@ -385,7 +385,7 @@
                             <div class="field">
                                 <label for="imdb_id" class="label has-text-weight-normal has-text-left mb-1">IMDB id:</label>
                                 <div class="control has-icons-left has-icons-right">
-                                    <input class="input is-dark" id="imdb_id" type="text" placeholder="" name="imdb_id" autocomplete="off">
+                                    <input class="input is-dark" id="imdb_id" type="text" placeholder="tt0338013" name="imdb_id" autocomplete="off">
                                     <span class="icon is-small is-left">
                                         <i class="fab fa-imdb"></i>
                                     </span>

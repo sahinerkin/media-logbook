@@ -454,3 +454,14 @@ class Database:
 
         myDB.updateRows("series", settings, condition)
 
+    def getOtherInfosFor(self, user_id):
+        columns = "content.content_id, title, completion_status, owned, user_rating"
+
+        joinPhrase = """
+                     INNER JOIN content
+                     ON user_content.content_id = content.content_id
+                     """
+        
+        condition = "user_id = {} AND content.content_type = NULL".format(user_id)
+
+        return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)

@@ -31,3 +31,9 @@ ON user_content.content_id = content.content_id
 INNER JOIN series
 ON content.type_specific_id = series.series_id
 WHERE content.content_type = 'series';
+
+SELECT content.content_id, title, completion_status, owned, user_rating
+FROM user_content
+INNER JOIN content
+ON user_content.content_id = content.content_id
+WHERE content.content_type = NULL;
