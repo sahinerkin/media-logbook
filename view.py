@@ -2,10 +2,6 @@ from flask import Flask, render_template, current_app, request, redirect, url_fo
 import db_queries as myDB
 from hashlib import sha256
 from datetime import datetime
-from user import User
-from usercontent import UserContent
-from content import Content
-from book import Book
 
 def home():
     

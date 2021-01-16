@@ -4,10 +4,6 @@ import os
 from db_init import initialize
 from psycopg2 import extensions
 from database import Database
-from user import User
-from usercontent import UserContent
-from content import Content
-from book import Book
 
 onHeroku = False
 
