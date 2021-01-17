@@ -6,7 +6,6 @@ from psycopg2 import extensions
 from database import Database
 
 onHeroku = True
-app = create_app()
 
 def create_app():
     app = Flask(__name__)
@@ -57,6 +56,7 @@ def create_app():
     app.config["currentuser"] = None
     return app
 
+app = create_app()
 
 
 if __name__ == "__main__":
