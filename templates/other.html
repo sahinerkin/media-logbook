@@ -69,31 +69,37 @@
                 {% set boxColors = ["primary","danger","info","success"] %}
                 {% set boxSizes = [5, 6, 6, 5] %}
                 {% set ns = namespace(boxCount = 0) %}
-                {% for otherInfos in getOtherInfosFor(user_id) %}
+                {% for otherInfos in getOtherInfosFor(user_id, rating_filter=rating_filter, completion_filter=completion_filter, owned_filter=owned_filter) %}
                 {% set boxSelector = ns.boxCount%4 %}
                 {% set genresList = getGenresFor(otherInfos[0]) %}
                 <div class="has-background-{{boxColors[boxSelector]}} is-{{boxSizes[boxSelector]}} m-3 px-4 column card">
                     <p class="title is-5 is-capitalized has-text-weight-bold"><i class="fas fa-ellipsis-h"></i> {{otherInfos[1]}}</p>
                     <p class="genres"><span class="has-text-weight-bold">Genres:</span>
-                            {% if genresList is not none %}{% for genre in genresList %}
-                            <span class="tag is-{{boxColors[boxSelector]}} is-light">{{genre[1]}}</span>
-                            {% endfor %}{% else %}<br>{% endif %}
+                        {% if genresList is not none %}{% for genre in genresList %}
+                        <span class="tag is-{{boxColors[boxSelector]}} is-light">{{genre[1]}}</span>
+                        {% endfor %}{% else %}<br>{% endif %}
                     </p>
-
+                    
                     {% if otherInfos[3] is not none %}
-                    <p class="owned-status has-text-right"><i class="fas fa-boxes"></i>
-                        {% if otherInfos[3] %} Owned {% else %} Not Owned {% endif %}
-                    </p>
+                    <a href="{{url_for('others', username=user[1], owned_filter=otherInfos[3])}}">
+                        <p class="owned-status has-text-right"><i class="fas fa-boxes"></i>
+                            {% if otherInfos[3] %} Owned {% else %} Not Owned {% endif %}
+                        </p>
+                    </a>
                     {% else %}<br>{% endif %}
                     
                     {% if otherInfos[2] is not none %}
-                    <p class="completion-status has-text-right"><i class="fas fa-check"></i>
-                    {% if otherInfos[2] %} Completed {% else %} Incompleted {% endif %}
-                    </p>
+                    <a href="{{url_for('others', username=user[1], completion_filter=otherInfos[2])}}">
+                        <p class="completion-status has-text-right"><i class="fas fa-check"></i>
+                            {% if otherInfos[2] %} Completed {% else %} Incompleted {% endif %}
+                        </p>
+                    </a>
                     {% else %}<br>{% endif %}
 
                     {% if otherInfos[4] is not none %}
-                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{otherInfos[4]}}/10</p>
+                    <a href="{{url_for('others', username=user[1], rating_filter=otherInfos[4])}}">
+                        <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{otherInfos[4]}}/10</p>
+                    </a>
                     {% else %}<br>{% endif %}
 
                     {% if currentuser_id == user_id %}
@@ -212,14 +218,19 @@
             </div>
         </div>
 
-        {% if currentuser_id == user_id %}
+        {% if rating_filter is not none or owned_filter is not none or completion_filter is not none %}
+        <a class="button is-large is-danger is-rounded floating-button clear-filter-button" href="{{url_for('others', username=user[1])}}">
+            <span class="icon">
+                <i class="fas fa-times"></i>
+            </span>
+        </a>
+        {% elif currentuser_id == user_id %}
         <button class="button is-large is-info is-rounded floating-button add-button add-content">
             <span class="icon">
                 <i class="fas fa-plus"></i>
             </span>
         </button>
         {% endif %}
-
         <button class="button is-large is-info is-rounded floating-button top-button">
             <span class="icon">
                 <i class="fas fa-arrow-up"></i>

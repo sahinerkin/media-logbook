@@ -69,7 +69,7 @@
                 {% set boxColors = ["primary","danger","info","success"] %}
                 {% set boxSizes = [5, 6, 6, 5] %}
                 {% set ns = namespace(boxCount = 0) %}
-                {% for movieInfos in getMovieInfosFor(user_id) %}
+                {% for movieInfos in getMovieInfosFor(user_id, rating_filter=rating_filter, completion_filter=completion_filter, owned_filter=owned_filter) %}
                 {% set boxSelector = ns.boxCount%4 %}
                 {% set genresList = getGenresFor(movieInfos[0]) %}
                 <div class="has-background-{{boxColors[boxSelector]}} is-{{boxSizes[boxSelector]}} m-3 px-4 column card">
@@ -88,26 +88,31 @@
                         {% if movieInfos[7] is not none %}{{movieInfos[7]}}{% else %}Unknown{% endif %}
                     </p>
                     <p class="genres"><span class="has-text-weight-bold">Genres:</span>
-                            {% if genresList is not none %}{% for genre in genresList %}
-                            <span class="tag is-{{boxColors[boxSelector]}} is-light">{{genre[1]}}</span>
-                            {% endfor %}{% else %}<br>{% endif %}
+                        {% if genresList is not none %}{% for genre in genresList %}
+                        <span class="tag is-{{boxColors[boxSelector]}} is-light">{{genre[1]}}</span>
+                        {% endfor %}{% else %}<br>{% endif %}
                     </p>
-                        
-                    
+
                     {% if movieInfos[9] is not none %}
-                    <p class="owned-status has-text-right"><i class="fas fa-boxes"></i>
-                        {% if movieInfos[9] %} Owned {% else %} Not Owned {% endif %}
-                    </p>
+                    <a href="{{url_for('movies', username=user[1], owned_filter=movieInfos[9])}}">
+                        <p class="owned-status has-text-right"><i class="fas fa-boxes"></i>
+                            {% if movieInfos[9] %} Owned {% else %} Not Owned {% endif %}
+                        </p>
+                    </a>
                     {% else %}<br>{% endif %}
                     
                     {% if movieInfos[8] is not none %}
-                    <p class="completion-status has-text-right"><i class="fas fa-check"></i>
-                    {% if movieInfos[8] %} Completed {% else %} Incompleted {% endif %}
-                    </p>
+                    <a href="{{url_for('movies', username=user[1], completion_filter=movieInfos[8])}}">
+                        <p class="completion-status has-text-right"><i class="fas fa-check"></i>
+                            {% if movieInfos[8] %} Completed {% else %} Incompleted {% endif %}
+                        </p>
+                    </a>
                     {% else %}<br>{% endif %}
 
                     {% if movieInfos[10] is not none %}
-                    <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{movieInfos[10]}}/10</p>
+                    <a href="{{url_for('movies', username=user[1], rating_filter=movieInfos[10])}}">
+                        <p class="user-rating has-text-right"><i class="fas fa-star"></i> {{movieInfos[10]}}/10</p>
+                    </a>
                     {% else %}<br>{% endif %}
 
                     {% if currentuser_id == user_id %}
@@ -293,14 +298,19 @@
             </div>
         </div>
 
-        {% if currentuser_id == user_id %}
+        {% if rating_filter is not none or owned_filter is not none or completion_filter is not none %}
+        <a class="button is-large is-danger is-rounded floating-button clear-filter-button" href="{{url_for('movies', username=user[1])}}">
+            <span class="icon">
+                <i class="fas fa-times"></i>
+            </span>
+        </a>
+        {% elif currentuser_id == user_id %}
         <button class="button is-large is-info is-rounded floating-button add-button add-content">
             <span class="icon">
                 <i class="fas fa-plus"></i>
             </span>
         </button>
         {% endif %}
-
         <button class="button is-large is-info is-rounded floating-button top-button">
             <span class="icon">
                 <i class="fas fa-arrow-up"></i>

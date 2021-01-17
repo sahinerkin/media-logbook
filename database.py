@@ -215,7 +215,7 @@ class Database:
         return book_id
     
 
-    def getBookInfosFor(self, user_id):
+    def getBookInfosFor(self, user_id, rating_filter=None, completion_filter=None, owned_filter=None):
         columns = "content.content_id, book_id, title, author, release_year, language, no_pages, isbn, completion_status, owned, user_rating"
 
         joinPhrase = """
@@ -226,6 +226,10 @@ class Database:
                      """
         
         condition = "user_id = {} AND content.content_type = 'book'".format(user_id)
+
+        if (rating_filter is not None): condition += " AND user_rating = {}".format(rating_filter)
+        elif (completion_filter is not None): condition += " AND completion_status = {}".format(completion_filter)
+        elif (owned_filter is not None): condition += " AND owned = {}".format(owned_filter)
 
         return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)
 
@@ -319,7 +323,7 @@ class Database:
         return movie_id
     
 
-    def getMovieInfosFor(self, user_id):
+    def getMovieInfosFor(self, user_id, rating_filter=None, completion_filter=None, owned_filter=None):
         columns = "content.content_id, movie_id, title, director, release_year, language, length, imdb_id, completion_status, owned, user_rating"
 
         joinPhrase = """
@@ -330,6 +334,10 @@ class Database:
                      """
         
         condition = "user_id = {} AND content.content_type = 'movie'".format(user_id)
+
+        if (rating_filter is not None): condition += " AND user_rating = {}".format(rating_filter)
+        elif (completion_filter is not None): condition += " AND completion_status = {}".format(completion_filter)
+        elif (owned_filter is not None): condition += " AND owned = {}".format(owned_filter)
 
         return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)
 
@@ -407,7 +415,7 @@ class Database:
         return series_id
     
 
-    def getSeriesInfosFor(self, user_id):
+    def getSeriesInfosFor(self, user_id, rating_filter=None, completion_filter=None, owned_filter=None):
         columns = "content.content_id, series_id, title, release_year, language, no_seasons, imdb_id, completion_status, owned, user_rating"
 
         joinPhrase = """
@@ -418,6 +426,10 @@ class Database:
                      """
         
         condition = "user_id = {} AND content.content_type = 'series'".format(user_id)
+
+        if (rating_filter is not None): condition += " AND user_rating = {}".format(rating_filter)
+        elif (completion_filter is not None): condition += " AND completion_status = {}".format(completion_filter)
+        elif (owned_filter is not None): condition += " AND owned = {}".format(owned_filter)
 
         return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)
 
@@ -454,7 +466,7 @@ class Database:
 
         myDB.updateRows("series", settings, condition)
 
-    def getOtherInfosFor(self, user_id):
+    def getOtherInfosFor(self, user_id, rating_filter=None, completion_filter=None, owned_filter=None):
         columns = "content.content_id, title, completion_status, owned, user_rating"
 
         joinPhrase = """
@@ -462,6 +474,10 @@ class Database:
                      ON user_content.content_id = content.content_id
                      """
         
-        condition = "user_id = {} AND content.content_type = NULL".format(user_id)
+        condition = "user_id = {} AND content.content_type IS NULL".format(user_id)
+
+        if (rating_filter is not None): condition += " AND user_rating = {}".format(rating_filter)
+        elif (completion_filter is not None): condition += " AND completion_status = {}".format(completion_filter)
+        elif (owned_filter is not None): condition += " AND owned = {}".format(owned_filter)
 
         return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)

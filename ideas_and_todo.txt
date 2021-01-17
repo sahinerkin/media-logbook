@@ -1,6 +1,3 @@
-// implement or generalize view.py functions for others
-// generalize books, movies, and series page for others
-
 // LATER IMPLEMENTATION:
 // Filter on categories, completion status and owned
 

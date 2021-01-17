@@ -26,12 +26,16 @@ p.title{
 	width:60px;
 	height:60px;
 	
-	
 	text-align:center;
 	box-shadow: 2px 2px 3px #dddddd;
 }
 
 .add-button {
+    bottom:40px;
+	right:120px;
+}
+
+.clear-filter-button {
     bottom:40px;
 	right:120px;
 }

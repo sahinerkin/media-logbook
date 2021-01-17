@@ -82,7 +82,7 @@ def profile():
     return redirect(url_for(page, username=username))
 
 
-def books(username):
+def books(username, rating_filter=None, completion_filter=None, owned_filter=None):
     db = current_app.config["db"]
     currentuser_id = current_app.config["currentuser"]
     getUser = db.getUser
@@ -90,11 +90,11 @@ def books(username):
     getBookInfosFor = db.getBookInfosFor
     getGenresFor = db.getGenresFor
     if user_id:
-        return render_template("book.html", user_id=user_id, currentuser_id = currentuser_id, getUser=getUser, getBookInfosFor=getBookInfosFor, getGenresFor=getGenresFor)
+        return render_template("book.html", user_id=user_id, currentuser_id = currentuser_id, rating_filter = rating_filter, completion_filter=completion_filter, owned_filter=owned_filter, getUser=getUser, getBookInfosFor=getBookInfosFor, getGenresFor=getGenresFor)
     
     return render_template("notfound.html", username=username)
 
-def movies(username):
+def movies(username, rating_filter=None, completion_filter=None, owned_filter=None):
     db = current_app.config["db"]
     currentuser_id = current_app.config["currentuser"]
     getUser = db.getUser
@@ -102,11 +102,11 @@ def movies(username):
     getMovieInfosFor = db.getMovieInfosFor
     getGenresFor = db.getGenresFor
     if user_id:
-        return render_template("movie.html", user_id=user_id, currentuser_id = currentuser_id, getUser=getUser, getMovieInfosFor=getMovieInfosFor, getGenresFor=getGenresFor)
+        return render_template("movie.html", user_id=user_id, currentuser_id = currentuser_id, rating_filter = rating_filter, completion_filter=completion_filter, owned_filter=owned_filter, getUser=getUser, getMovieInfosFor=getMovieInfosFor, getGenresFor=getGenresFor)
     
     return render_template("notfound.html", username=username)
 
-def series(username):
+def series(username, rating_filter=None, completion_filter=None, owned_filter=None):
     db = current_app.config["db"]
     currentuser_id = current_app.config["currentuser"]
     getUser = db.getUser
@@ -114,11 +114,11 @@ def series(username):
     getSeriesInfosFor = db.getSeriesInfosFor
     getGenresFor = db.getGenresFor
     if user_id:
-        return render_template("series.html", user_id=user_id, currentuser_id = currentuser_id, getUser=getUser, getSeriesInfosFor=getSeriesInfosFor, getGenresFor=getGenresFor)
+        return render_template("series.html", user_id=user_id, currentuser_id = currentuser_id, rating_filter = rating_filter, completion_filter=completion_filter, owned_filter=owned_filter, getUser=getUser, getSeriesInfosFor=getSeriesInfosFor, getGenresFor=getGenresFor)
     
     return render_template("notfound.html", username=username)
 
-def others(username):
+def others(username, rating_filter=None, completion_filter=None, owned_filter=None):
     db = current_app.config["db"]
     currentuser_id = current_app.config["currentuser"]
     getUser = db.getUser
@@ -126,7 +126,7 @@ def others(username):
     getOtherInfosFor = db.getOtherInfosFor
     getGenresFor = db.getGenresFor
     if user_id:
-        return render_template("other.html", user_id=user_id, currentuser_id = currentuser_id, getUser=getUser, getOtherInfosFor=getOtherInfosFor, getGenresFor=getGenresFor)
+        return render_template("other.html", user_id=user_id, currentuser_id = currentuser_id, rating_filter = rating_filter, completion_filter=completion_filter, owned_filter=owned_filter, getUser=getUser, getOtherInfosFor=getOtherInfosFor, getGenresFor=getGenresFor)
     
     return render_template("notfound.html", username=username)
 
