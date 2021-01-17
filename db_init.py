@@ -3,7 +3,7 @@ import sys
 import psycopg2 as dbapi2
 
 INIT_STATEMENTS = [
-    """CREATE TABLE user_table (
+    """CREATE TABLE IF NOT EXISTS user_table (
     user_id             SERIAL          NOT NULL,
     username            VARCHAR(100)    NOT NULL,
     password_hash       CHAR(64)        NOT NULL,
@@ -13,7 +13,7 @@ INIT_STATEMENTS = [
 );
 """,
 """
-CREATE TABLE content (
+CREATE TABLE IF NOT EXISTS content (
 	content_id          SERIAL          NOT NULL,
     content_type        VARCHAR(10),
     type_specific_id    INT,
@@ -22,7 +22,7 @@ CREATE TABLE content (
 );
 """,
 """
-CREATE TABLE user_content (
+CREATE TABLE IF NOT EXISTS user_content (
     user_id             INT             NOT NULL,
     content_id          INT             NOT NULL,
     completion_status   BOOLEAN,
@@ -33,7 +33,7 @@ CREATE TABLE user_content (
 );
 """,
 """
-CREATE TABLE book (
+CREATE TABLE IF NOT EXISTS book (
     book_id             SERIAL             NOT NULL,
     author              VARCHAR(100),
     release_year        INT,
@@ -44,14 +44,14 @@ CREATE TABLE book (
 );
 """,
 """
-CREATE TABLE content_genre (
+CREATE TABLE IF NOT EXISTS content_genre (
     content_id          INT             NOT NULL,
     genre               VARCHAR(100)    NOT NULL,
     FOREIGN KEY (content_id) REFERENCES content(content_id)
 );
 """,
 """
-CREATE TABLE movie (
+CREATE TABLE IF NOT EXISTS movie (
     movie_id            SERIAL		NOT NULL,
     director            VARCHAR(100),
     release_year        INT,
@@ -62,7 +62,7 @@ CREATE TABLE movie (
 );
 """,
 """
-CREATE TABLE series (
+CREATE TABLE IF NOT EXISTS series (
 	series_id          	SERIAL		NOT NULL,
     release_year        INT,
     language            VARCHAR(100),

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, current_app, request, redirect, url_for
+from flask import Flask, render_template, current_app, request, redirect, url_for, session
 import db_queries as myDB
 from hashlib import sha256
 from datetime import datetime
@@ -6,9 +6,9 @@ from datetime import datetime
 def home():
     
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]    
 
-    if currentuser_id is not None:
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
         user = db.getUser(currentuser_id)
         username = user[1]
         return redirect(url_for("books", username=username))
@@ -18,10 +18,9 @@ def home():
 def login():
     
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
-    
 
-    if currentuser_id is not None:
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
         user = db.getUser(currentuser_id)
         username = user[1]
         return redirect(url_for("books", username=username))
@@ -38,7 +37,7 @@ def login():
         pw_bytestring = password.encode()
         password_hash = sha256(pw_bytestring).hexdigest() 
         if user[2] == password_hash:
-            current_app.config["currentuser"] = user_id
+            session['user_id'] = user_id
             return redirect(url_for("books", username=username))
 
     return home()
@@ -46,9 +45,9 @@ def login():
 def signup():
     
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
     
-    if currentuser_id is not None:
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
         user = db.getUser(currentuser_id)
         username = user[1]
         return redirect(url_for("books", username=username))
@@ -66,7 +65,7 @@ def signup():
     return home()
 
 def logout():
-    current_app.config["currentuser"] = None
+    session.pop('user_id', None)
     return home()
 
 def test():
@@ -84,7 +83,12 @@ def profile():
 
 def books(username, rating_filter=None, completion_filter=None, owned_filter=None):
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
+
     getUser = db.getUser
     user_id = db.getUserByUsername(username)
     getBookInfosFor = db.getBookInfosFor
@@ -96,7 +100,12 @@ def books(username, rating_filter=None, completion_filter=None, owned_filter=Non
 
 def movies(username, rating_filter=None, completion_filter=None, owned_filter=None):
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
+
     getUser = db.getUser
     user_id = db.getUserByUsername(username)
     getMovieInfosFor = db.getMovieInfosFor
@@ -108,7 +117,12 @@ def movies(username, rating_filter=None, completion_filter=None, owned_filter=No
 
 def series(username, rating_filter=None, completion_filter=None, owned_filter=None):
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
+
     getUser = db.getUser
     user_id = db.getUserByUsername(username)
     getSeriesInfosFor = db.getSeriesInfosFor
@@ -120,7 +134,12 @@ def series(username, rating_filter=None, completion_filter=None, owned_filter=No
 
 def others(username, rating_filter=None, completion_filter=None, owned_filter=None):
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
+
     getUser = db.getUser
     user_id = db.getUserByUsername(username)
     getOtherInfosFor = db.getOtherInfosFor
@@ -135,7 +154,11 @@ def add_book(username):
         return books(username)
 
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
 
     title = request.form.get("content_title").strip()
 
@@ -173,7 +196,11 @@ def add_movie(username):
         return movies(username)
 
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
 
     title = request.form.get("content_title").strip()
 
@@ -212,7 +239,11 @@ def add_series(username):
         return series(username)
 
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
 
     title = request.form.get("content_title").strip()
 
@@ -249,7 +280,11 @@ def add_other(username):
         return others(username)
 
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
 
     title = request.form.get("content_title").strip()
 
@@ -282,7 +317,11 @@ def delete():
         return redirect(request.referrer)
 
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
 
     content_id = int(request.form.get("delete"))
     uc = db.getUserContent(currentuser_id, content_id)
@@ -318,7 +357,11 @@ def edit(content_id):
         return redirect(request.referrer)
 
     db = current_app.config["db"]
-    currentuser_id = current_app.config["currentuser"]
+    
+    if 'user_id' in session:
+        currentuser_id = session['user_id']
+    else:
+        currentuser_id = None
 
     uc = db.getUserContent(currentuser_id, content_id)
     

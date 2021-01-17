@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, session
 import view
 import os
 from db_init import initialize
@@ -9,6 +9,8 @@ onHeroku = True
 
 def create_app():
     app = Flask(__name__)
+    app.config['SECRET_KEY'] = 'ZGCiPZ5cygTxcxv1PMn1j4VCWowpNGHg'
+
     app.add_url_rule("/", view_func=view.home)
     app.add_url_rule("/", methods=["GET", "POST"], view_func=view.signup)
     app.add_url_rule("/login", methods=["GET", "POST"], view_func=view.login)
@@ -53,7 +55,6 @@ def create_app():
     db = Database()
 
     app.config["db"] = db
-    app.config["currentuser"] = None
     return app
 
 app = create_app()
