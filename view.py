@@ -3,7 +3,7 @@ import db_queries as myDB
 from hashlib import sha256
 from datetime import datetime
 
-def home():
+def home(alert_message=None):
     
     db = current_app.config["db"]
 
@@ -13,7 +13,7 @@ def home():
         username = user[1]
         return redirect(url_for("books", username=username))
 
-    return render_template("home.html")
+    return render_template("home.html", alert_message=alert_message)
 
 def login():
     
@@ -40,7 +40,7 @@ def login():
             session['user_id'] = user_id
             return redirect(url_for("books", username=username))
 
-    return home()
+    return home(alert_message="Couldn't log in. Please try again.")
 
 def signup():
     
@@ -62,7 +62,9 @@ def signup():
         pw_bytestring = password.encode()
         password_hash = sha256(pw_bytestring).hexdigest()
         db.addUser(username, password_hash)
-    return home()
+        return home()
+
+    return home("Couldn't sign up. Please try again.")
 
 def logout():
     session.pop('user_id', None)
