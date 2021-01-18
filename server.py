@@ -5,7 +5,7 @@ from db_init import initialize
 from psycopg2 import extensions
 from database import Database
 
-onHeroku = False
+onHeroku = True
 
 def create_app():
     app = Flask(__name__)
