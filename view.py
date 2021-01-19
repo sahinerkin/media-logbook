@@ -28,7 +28,7 @@ def login():
     if request.method == "GET":
         return home()
     
-    username = request.form.get("username")
+    username = request.form.get("username").strip()
     password = request.form.get("password")
     user_id = db.getUserByUsername(username)
     
@@ -55,7 +55,7 @@ def signup():
     if request.method == "GET":
         return home()
     
-    username = request.form.get("username_signup")
+    username = request.form.get("username_signup").strip()
     password = request.form.get("password_signup")
 
     if username != "" and password != "" and db.getUserByUsername(username) is None:
