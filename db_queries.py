@@ -30,7 +30,7 @@ def joinSelectRows(table, columns, joinPhrase, condition=None):
     if condition is not None:
         query += " WHERE {}".format(condition)
     
-    # print(query)
+    print(query)
     return runQuery(query, returns=True)
 
 

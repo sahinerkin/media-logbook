@@ -225,11 +225,13 @@ class Database:
                      ON content.type_specific_id = book.book_id
                      """
         
-        condition = "user_id = {} AND content.content_type = 'book' ORDER BY content.content_id".format(user_id)
+        condition = "user_id = {} AND content.content_type = 'book'".format(user_id)
 
         if (rating_filter is not None): condition += " AND user_rating = {}".format(rating_filter)
         elif (completion_filter is not None): condition += " AND completion_status = {}".format(completion_filter)
         elif (owned_filter is not None): condition += " AND owned = {}".format(owned_filter)
+
+        condition += " ORDER BY content.content_id"
 
         return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)
 
@@ -333,11 +335,13 @@ class Database:
                      ON content.type_specific_id = movie.movie_id
                      """
         
-        condition = "user_id = {} AND content.content_type = 'movie' ORDER BY content.content_id".format(user_id)
+        condition = "user_id = {} AND content.content_type = 'movie'".format(user_id)
 
         if (rating_filter is not None): condition += " AND user_rating = {}".format(rating_filter)
         elif (completion_filter is not None): condition += " AND completion_status = {}".format(completion_filter)
         elif (owned_filter is not None): condition += " AND owned = {}".format(owned_filter)
+
+        condition += " ORDER BY content.content_id"
 
         return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)
 
@@ -425,11 +429,13 @@ class Database:
                      ON content.type_specific_id = series.series_id
                      """
         
-        condition = "user_id = {} AND content.content_type = 'series' ORDER BY content.content_id".format(user_id)
+        condition = "user_id = {} AND content.content_type = 'series'".format(user_id)
 
         if (rating_filter is not None): condition += " AND user_rating = {}".format(rating_filter)
         elif (completion_filter is not None): condition += " AND completion_status = {}".format(completion_filter)
         elif (owned_filter is not None): condition += " AND owned = {}".format(owned_filter)
+
+        condition += " ORDER BY content.content_id"
 
         return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)
 
@@ -474,10 +480,12 @@ class Database:
                      ON user_content.content_id = content.content_id
                      """
         
-        condition = "user_id = {} AND content.content_type IS NULL ORDER BY content.content_id".format(user_id)
+        condition = "user_id = {} AND content.content_type IS NULL".format(user_id)
 
         if (rating_filter is not None): condition += " AND user_rating = {}".format(rating_filter)
         elif (completion_filter is not None): condition += " AND completion_status = {}".format(completion_filter)
         elif (owned_filter is not None): condition += " AND owned = {}".format(owned_filter)
+
+        condition += " ORDER BY content.content_id"
 
         return myDB.joinSelectRows("user_content", columns, joinPhrase, condition=condition)
