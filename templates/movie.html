@@ -15,10 +15,12 @@
         
         <div class="has-background-info-dark has-text-weight-bold has-text-white is-centered m-0 px-6 py-5">
             <p class="pl-2 mb-1">Movies of:</p>
-            <form action="{{url_for('profile')}}" method="POST" id="">
-                <input class="input has-background-info has-text-weight-bold has-text-white" type="text" name="user_profile" value="{{user[1]}}" id="user_profile" autocomplete="off" style="border: none;">
-                <input type="hidden" name="page_name" id="page_name" value="movies">
-            </form>
+            <div class="has-tooltip-bottom has-tooltip-arrow has-tooltip-text-centered" data-tooltip="Enter a username">
+                <form action="{{url_for('profile')}}" method="POST" id="">
+                    <input class="input has-background-info has-text-weight-bold has-text-white" type="text" name="user_profile" value="{{user[1]}}" id="user_profile" autocomplete="off" style="border: none;">
+                    <input type="hidden" name="page_name" id="page_name" value="movies">
+                </form>
+            </div>
         </div>
 
         <div class="px-0 py-5">
@@ -300,19 +302,19 @@
 
         {% if rating_filter is not none or owned_filter is not none or completion_filter is not none %}
         <a class="button is-large is-danger is-rounded floating-button clear-filter-button" href="{{url_for('movies', username=user[1])}}">
-            <span class="icon">
+            <span class="icon has-tooltip" data-tooltip="Clear filter">
                 <i class="fas fa-times"></i>
             </span>
         </a>
         {% elif currentuser_id == user_id %}
         <button class="button is-large is-info is-rounded floating-button add-button add-content">
-            <span class="icon">
+            <span class="icon has-tooltip" data-tooltip="Add movie">
                 <i class="fas fa-plus"></i>
             </span>
         </button>
         {% endif %}
         <button class="button is-large is-info is-rounded floating-button top-button">
-            <span class="icon">
+            <span class="icon has-tooltip" data-tooltip="To the top">
                 <i class="fas fa-arrow-up"></i>
             </span>
         </button>
