@@ -1,5 +1,7 @@
 # Media Logbook
 
+Live preview:
 
-[Live preview: homepage](http://media-logbook.herokuapp.com/)
-[Live preview: my books](http://media-logbook.herokuapp.com/sahnerkin/books)
+[homepage](http://media-logbook.herokuapp.com/)
+
+[my books](http://media-logbook.herokuapp.com/sahnerkin/books)
